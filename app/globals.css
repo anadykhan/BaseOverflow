@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @import url("../styles/theme.css");
 
 body {
@@ -22,7 +21,7 @@ body {
     }
 
     .card-wrapper {
-        @apply bg-light-900 dark:dark-gradient shadow-light-100 dark:shadow-dark-100;
+        @apply bg-light-900 dark:dark-gradient shadow-light-100 dar;
     }
 
     .btn {
@@ -38,7 +37,7 @@ body {
     }
 
     .markdown {
-        @apply max-w-full prose dark:prose-p:text-light-700 dark:prose-headings:text-light-800;
+        @apply max-w-full prose dark:prose-p:text-light-700 dark:pros;
     }
 
     .primary-gradient {
@@ -52,48 +51,48 @@ body {
     }
 
     .tab {
-        @apply min-h-full dark:bg-dark-400 bg-light-800 text-light-500;
+        @apply min-h-full dark:bg-dark-400 bg-light-800 text-light-5;
     }
 
     .no-focus {
         @apply focus-visible:ring-0 focus-visible:ring-transparent;
     }
+}
 
-    .active-theme {
-        filter: invert(53%) sepia(98%) saturate(3332%) hue-rotate(0deg) brightness(104%) contrast(106%) !important;
-    }
+.active-theme {
+    filter: invert(53%) sepia(98%) saturate(3332%) hue-rotate(0deg) brightness(104%) contrast(106%) !important;
+}
 
-    .light-gradient {
-        background: linear-gradient(132deg,
-                rgba(247, 249, 255, 0.5) 0%,
-                rgba(229, 237, 255, 0.25) 100%);
-    }
+.light-gradient {
+    background: linear-gradient(132deg,
+            rgba(247, 249, 255, 0.5) 0%,
+            rgba(229, 237, 255, 0.25) 100%);
+}
 
-    .primary-text-gradient {
-        background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+.primary-text-gradient {
+    background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 3px;
-        height: 3px;
-        border-radius: 2px;
-    }
+.custom-scrollbar::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    border-radius: 2px;
+}
 
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #ffffff;
-    }
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #ffffff;
+}
 
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 50px;
-    }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 50px;
+}
 
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* Markdown Start */
@@ -103,10 +102,15 @@ body {
 
 .markdown a,
 code {
+    /* These are technically the same, but use both */
     overflow-wrap: break-word;
     word-wrap: break-word;
     -ms-word-break: break-all;
+
+    word-break: break-all;
+    /* Instead use this non-standard one: */
     word-break: break-word;
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
     -ms-hyphens: auto;
     -moz-hyphens: auto;
     -webkit-hyphens: auto;
@@ -128,7 +132,6 @@ code {
 }
 
 /* Markdown End */
-
 /* Clerk */
 .cl-internal-b3fm6y {
     background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
