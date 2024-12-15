@@ -6,24 +6,24 @@ import { popularTags } from "@/constants";
 const RightSidebar = () => {
   const hotQuestions = [
     {
-      _id: 1,
+      _id: "1",
       title: "How do i express a custom server in Next.Js?",
     },
     {
-      _id: 2,
+      _id: "2",
       title: "Cascading deletes in SQLAcademy?",
     },
     {
-      _id: 3,
+      _id: "3",
       title: "How to perfectly center a div in tailwind css?",
     },
     {
-      _id: 4,
+      _id: "4",
       title:
         "Best practices for data fetching in a Next.js application with Server-side Rendering?",
     },
     {
-      _id: 5,
+      _id: "5",
       title: "Redux is not updating state as expected",
     },
   ];
