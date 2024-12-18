@@ -1,7 +1,12 @@
 import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { ControllerRenderProps } from "react-hook-form";
 
-const TextEditor = () => {
+type TextEditorProps = {
+  field: ControllerRenderProps;
+};
+
+const TextEditor = ({ field }: TextEditorProps) => {
   const editorRef = useRef(null);
   return (
     <>
@@ -11,6 +16,8 @@ const TextEditor = () => {
           // @ts-expect-error
           (editorRef.current = editor)
         }
+        onBlur={field.onBlur}
+        onEditorChange={(content) => field.onChange(content)}
         initialValue=""
         init={{
           height: 350,
@@ -37,8 +44,7 @@ const TextEditor = () => {
             "codesample bold italic forecolor | alignleft aligncenter " +
             "alignright alignjustify | bullist numlist outdent indent | " +
             "removeformat | help",
-          content_style:
-            "body { font-family:Inter; font-size:16px }",
+          content_style: "body { font-family:Inter; font-size:16px }",
         }}
       />
     </>

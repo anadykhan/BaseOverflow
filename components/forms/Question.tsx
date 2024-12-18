@@ -19,11 +19,19 @@ import TextEditor from "../editor/TextEditor";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { useState } from "react";
+import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
 const type: string = "create";
 
-const Question = () => {
+interface Props {
+  mongoUserId: string;
+}
+
+const Question = ({ mongUserId }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
@@ -35,40 +43,41 @@ const Question = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof QuestionsSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
     try {
-      // make a async call to the database
-      // contain all form data
-      // navigate to home page
-      
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongUserId),
+        path: pathname
+      });
+
+      router.push("/");
     } catch (error) {
-      
+      console.log(error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     field: any
-  ) => {
+  ): void => {
     if (e.key === "Enter" && field.name === "tags") {
       e.preventDefault();
 
       const tagInput = e.target as HTMLInputElement;
       const tagValue = tagInput.value.trim();
-
-      console.log(field);
-
       if (tagValue !== "") {
         if (tagValue.length > 15) {
           return form.setError("tags", {
-            type: "Required",
-            message: "Tag must be less that 15 characters.",
+            type: "required",
+            message: "Tag must be less then 15 characters.",
           });
         }
-
         if (!field.value.includes(tagValue as never)) {
           form.setValue("tags", [...field.value, tagValue]);
           tagInput.value = "";
@@ -80,7 +89,7 @@ const Question = () => {
     }
   };
 
-  const handleTagRemove = (tag: string, field: any) => {
+  const handleTagRemove = (tag: string, field: any): void => {
     const newTags = field.value.filter((t: string) => t !== tag);
 
     form.setValue("tags", newTags);
@@ -98,14 +107,19 @@ const Question = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Question Title <span className="text-primary-500">*</span>
+                Question Title
+                <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
-                <Input className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light900 min-h-[56px] border" />
+                <Input
+                  className="no-focus paragraph-regular background-light900_dark300
+                light-border-2 text-dark300_light700 min-h-[56px] border"
+                  {...field}
+                />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Be specific and imagine that you are asking a question to
-                another person.
+                Be specific and imagine you are asking a question to another
+                person.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -121,7 +135,7 @@ const Question = () => {
                 <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
-                <TextEditor />
+                <TextEditor field={field} />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
                 Explain your problem in the most descriptiptive manner. Minimum
