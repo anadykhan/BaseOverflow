@@ -28,7 +28,7 @@ interface Props {
   mongoUserId: string;
 }
 
-const Question = ({ mongUserId }: Props) => {
+const Question = ({ mongoUserId }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -50,8 +50,8 @@ const Question = ({ mongUserId }: Props) => {
         title: values.title,
         content: values.explanation,
         tags: values.tags,
-        author: JSON.parse(mongUserId),
-        path: pathname
+        author: JSON.parse(mongoUserId),
+        path: pathname,
       });
 
       router.push("/");
