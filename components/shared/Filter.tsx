@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import HomeFilters from "./home/HomeFilters";
+
 
 interface Props {
   filters: {
@@ -18,7 +18,7 @@ interface Props {
   containerClasses?: string;
 }
 
-const Filter = ({ filters, otherClasses, containerClasses }) => {
+const Filter = ({ filters, otherClasses, containerClasses }: Props) => {
   return (
     <>
     <div className={`relative ${containerClasses}`}>

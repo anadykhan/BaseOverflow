@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { link } from "fs";
-import { title } from "process";
 
 interface Props {
   title: string;

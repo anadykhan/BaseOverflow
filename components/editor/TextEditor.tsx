@@ -13,7 +13,7 @@ const TextEditor = ({ field }: TextEditorProps) => {
       <Editor
         apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
         onInit={(_evt, editor) =>
-          // @ts-expect-error
+          // @ts-expect-error: Suppress type error for setting editorRef.current
           (editorRef.current = editor)
         }
         onBlur={field.onBlur}

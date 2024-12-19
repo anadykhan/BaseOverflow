@@ -12,6 +12,8 @@ export async function getQuestions(params: GetQuestionParams) {
     // W.I.P: Sorting needs to be fixed
     connectToDatabase();
 
+    console.log("Get question param: ", params)
+
     const questions = await Question.find({})
       .sort({
         createdAt: -1,
@@ -61,5 +63,8 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     revalidatePath(path);
-  } catch (error: any) {}
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
 }

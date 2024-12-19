@@ -1,4 +1,3 @@
-import { create } from "domain";
 import Link from "next/link";
 import RenderTag from "../shared/RenderTag";
 import Information from "../shared/Information";
@@ -31,7 +30,7 @@ const QuestionCard = ({
   views,
   answers,
   createdAt,
-}) => {
+}: Props) => {
   return (
     <div className="card-wrapper p-9 rounded-[10px] p-9 sm:px-11">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
