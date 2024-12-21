@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -42,6 +42,8 @@ const Question = ({ mongoUserId }: Props) => {
     },
   });
 
+  console.log(form)
+
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
@@ -64,7 +66,7 @@ const Question = ({ mongoUserId }: Props) => {
 
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    field: any
+    field: ControllerRenderProps<z.infer<typeof QuestionsSchema>, "tags">
   ): void => {
     if (e.key === "Enter" && field.name === "tags") {
       e.preventDefault();
@@ -89,7 +91,10 @@ const Question = ({ mongoUserId }: Props) => {
     }
   };
 
-  const handleTagRemove = (tag: string, field: any): void => {
+  const handleTagRemove = (
+    tag: string,
+    field: ControllerRenderProps<z.infer<typeof QuestionsSchema>, "tags">
+  ): void => {
     const newTags = field.value.filter((t: string) => t !== tag);
 
     form.setValue("tags", newTags);
@@ -159,12 +164,13 @@ const Question = ({ mongoUserId }: Props) => {
                     className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light900 min-h-[56px] border"
                     placeholder="Add tags ..."
                     onKeyDown={(e) => {
+                      console.log(field)
                       handleInputKeyDown(e, field);
                     }}
                   />
                   {field.value.length > 0 && (
                     <div className="flex-start mt-2.5 gap-2.5 ">
-                      {field.value.map((tag: any) => {
+                      {field.value.map((tag: string) => {
                         return (
                           <Badge
                             key={tag}

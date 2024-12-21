@@ -1,9 +1,11 @@
 import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { ControllerRenderProps } from "react-hook-form";
+import { QuestionsSchema } from "@/lib/validations";
+import { z } from "zod";
 
 type TextEditorProps = {
-  field: ControllerRenderProps;
+  field: ControllerRenderProps<z.infer<typeof QuestionsSchema>, "explanation">;
 };
 
 const TextEditor = ({ field }: TextEditorProps) => {
