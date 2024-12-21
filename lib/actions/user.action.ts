@@ -5,6 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   GetUserByIdParams,
   UpdateUserParams,
 } from "./shared.types";
@@ -27,6 +28,8 @@ export async function getUserById(params: GetUserByIdParams) {
 export async function createUser(params: CreateUserParams) {
   try {
     connectToDatabase();
+
+    // W.I.P: if user is created dont create it again
 
     const newUser = await User.create(params);
 
@@ -75,6 +78,20 @@ export async function deleteUser(params: DeleteUserParams) {
     // WIP: delete answers
 
     return deletedUser;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase();
+
+    const { page = 1, pageSize = 20, filter, searchQuery } = params;
+
+    const users = await User.find({}).sort({ createdAt: -1 });
+    return users;
   } catch (error) {
     console.log(error);
     throw error;

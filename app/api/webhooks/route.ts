@@ -5,7 +5,7 @@ import { createUser, deleteUser, updateUser } from "@/lib/actions/user.action";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const SIGNING_SECRET = process.env.NEXT_CLERK_WEBHOOK_SECRET;
+  const SIGNING_SECRET = process.env.LOCAL_ENDPOINT_WEBHOOK_SIGNING_SECRET;
 
   if (!SIGNING_SECRET) {
     throw new Error(
@@ -49,11 +49,9 @@ export async function POST(req: Request) {
     });
   }
 
-  // Do something with payload
-  // For this guide, log payload to console
-  // const { id } = evt.data;
+  // Todo: Everytime the page refreshes, the user coming form the clerk event which is null, making a post request to the database also making the database user null
+  
   const eventType = evt.type;
-  console.log("Event type in webhook: ", eventType)
 
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
@@ -62,7 +60,7 @@ export async function POST(req: Request) {
     const mongoUser = await createUser({
       clerkId: id,
       name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
-      username: username!,
+      username: username || `user_${Date.now()}`,
       email: email_addresses[0].email_address,
       picture: image_url,
     });
@@ -71,12 +69,13 @@ export async function POST(req: Request) {
   } else if (eventType === "user.updated") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;
+    console.log("User update fired!");
 
     const mongoUser = await updateUser({
       clerkId: id,
       updateData: {
         name: `${first_name}${last_name ? `${last_name}` : ""}`,
-        username: username!,
+        username: username!, 
         email: email_addresses[0].email_address,
         picture: image_url,
       },
@@ -84,15 +83,16 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: "Ok", user: mongoUser });
-  } else if (eventType === "user.deleted") {
-    const { id } = evt.data;
-
-    const deletedUser = await deleteUser({
-      clerkId: id!,
-    });
-
-    return NextResponse.json({ message: "Deleted", user: deletedUser });
   }
+  // else if (eventType === "user.deleted") {
+  //   const { id } = evt.data;
+
+  //   const deletedUser = await deleteUser({
+  //     clerkId: id!,
+  //   });
+
+  //   return NextResponse.json({ message: "Deleted", user: deletedUser });
+  // }
 
   return new Response("Webhook received", { status: 200 });
 }

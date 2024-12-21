@@ -10,7 +10,7 @@ const isPublicRoute = createRouteMatcher([
   "/tags/:id",
   "/profile/:id",
   "/community",
-  "/jobs"
+  "/jobs",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
