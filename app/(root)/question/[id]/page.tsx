@@ -8,8 +8,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Page = async ({ params }) => {
-  console.log(params.id);
-  const result = await getQuestionById({ questionId: params.id });
+  const { id } = await params;
+
+  const result = await getQuestionById({ questionId: id });
 
   return (
     <>

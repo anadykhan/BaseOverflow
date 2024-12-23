@@ -58,3 +58,10 @@ export interface GetAllTagsParams {
 export interface GetQuestionByIdParams {
   questionId: string;
 }
+
+export interface CreateAnswerParams {
+  content: string;
+  author: string; 
+  question: string; 
+  path: string;
+}

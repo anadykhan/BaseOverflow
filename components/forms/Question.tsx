@@ -42,7 +42,7 @@ const Question = ({ mongoUserId }: Props) => {
     },
   });
 
-  console.log(form)
+  console.log(form);
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
@@ -140,7 +140,9 @@ const Question = ({ mongoUserId }: Props) => {
                 <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
-                <TextEditor field={field} />
+                <TextEditor<typeof QuestionsSchema, "explanation">
+                  field={field}
+                />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
                 Explain your problem in the most descriptiptive manner. Minimum
@@ -164,7 +166,7 @@ const Question = ({ mongoUserId }: Props) => {
                     className="no-focus paragraph-regular background-light700_dark300 light-border-2 text-dark300_light900 min-h-[56px] border"
                     placeholder="Add tags ..."
                     onKeyDown={(e) => {
-                      console.log(field)
+                      console.log(field);
                       handleInputKeyDown(e, field);
                     }}
                   />
