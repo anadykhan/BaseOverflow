@@ -26,7 +26,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 
     const user = await User.findById(userId);
 
-    // if (!user) throw new Error("User not found in top tags action!");
+    if (!user) throw new Error("User not found in top tags action!");
 
     // Todo: Find interactions for the user and group by Tags...
     // Todo: Interaction field in database to make it simpler
