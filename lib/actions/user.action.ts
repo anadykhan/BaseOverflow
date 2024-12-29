@@ -13,7 +13,6 @@ import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 
 export async function getUserById(params: GetUserByIdParams) {
-  console.log("GetUserByIdParams: ", params);
   try {
     connectToDatabase();
     const { userId } = params;

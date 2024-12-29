@@ -61,7 +61,14 @@ export interface GetQuestionByIdParams {
 
 export interface CreateAnswerParams {
   content: string;
-  author: string; 
-  question: string; 
+  author: string;
+  questionId: string;
   path: string;
+}
+
+export interface GetAnswersParams {
+  questionId: string;
+  sortBy?: string;
+  page?: number;
+  pageSize?: number;
 }

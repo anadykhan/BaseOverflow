@@ -1,38 +1,19 @@
-import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { ControllerRenderProps, Path } from "react-hook-form";
 import { z, ZodSchema } from "zod";
 import { useTheme } from "@/context/ThemeProvider";
-import { AnswersSchema } from "@/lib/validations";
 
-type TextEditorProps<T extends ZodSchema, K extends Path<z.infer<T>>> = {
+type AnswerEditorProps<T extends ZodSchema, K extends Path<z.infer<T>>> = {
   field: ControllerRenderProps<z.infer<T>, K>;
-  schema: T;
+  editorRef: React.Ref<any>
 };
 
-const TextEditor = <T extends ZodSchema, K extends Path<z.infer<T>>>({
+const AnswerEditor = <T extends ZodSchema, K extends Path<z.infer<T>>>({
   field,
-  schema,
-}: TextEditorProps<T, K>) => {
-  const editorRef = useRef(null);
+  editorRef,
+}: AnswerEditorProps<T, K>) => {
   const { mode } = useTheme();
 
-  if (
-    schema instanceof z.ZodObject &&
-    schema.shape === AnswersSchema.shape
-  ) {
-    try {
-      if (editorRef.current) {
-        console.log("Editor ref in answer: ", editorRef)
-        const editor = editorRef.current as any;
-        editor.setContent("");
-      }
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
-  console.log(mode);
   return (
     <>
       <Editor
@@ -78,4 +59,4 @@ const TextEditor = <T extends ZodSchema, K extends Path<z.infer<T>>>({
     </>
   );
 };
-export default TextEditor;
+export default AnswerEditor;
