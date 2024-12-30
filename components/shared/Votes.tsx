@@ -1,8 +1,13 @@
 "use client";
 
+import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
+import {
+  downvoteQuestion,
+  upvoteQuestion,
+} from "@/lib/actions/question.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
-import { Props } from "next/script";
+import { usePathname } from "next/navigation";
 
 interface Props {
   type: string;
@@ -10,7 +15,7 @@ interface Props {
   userId: string;
   upvotes: string;
   hasUpvoted: boolean;
-  downVotes: string;
+  downvotes: string;
   hasDownvoted: boolean;
   hasSaved?: boolean;
 }
@@ -20,13 +25,62 @@ const Votes = ({
   userId,
   upvotes,
   hasUpvoted,
-  downVotes,
+  downvotes,
   hasDownvoted,
   hasSaved,
 }: Props) => {
+  const pathname = usePathname();
   const handleSave = () => {};
 
-  const handleVote = (voteType: string) => { };
+  const handleVote = async (action: string) => {
+    if (!userId) {
+      return;
+    }
+
+    if (action === "upvote") {
+      if (type === "question") {
+        await upvoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasUpvoted,
+          hasDownvoted,
+          path: pathname,
+        });
+      } else if (type === "answer") {
+        await upvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasUpvoted,
+          hasDownvoted,
+          path: pathname,
+        });
+      }
+
+      return;
+    }
+
+    if (action === "downvote") {
+      if (type === "question") {
+        await downvoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasUpvoted,
+          hasDownvoted,
+          path: pathname,
+        });
+      } else if (type === "answer") {
+        await downvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasUpvoted,
+          hasDownvoted,
+          path: pathname,
+        });
+      }
+
+      return;
+    }
+  };
   return (
     <div className="flex gap-5">
       <div className="flex-center gap-2.5">
@@ -45,7 +99,7 @@ const Votes = ({
           />
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {formatAndDivideNumber(upvotes)}
+              {formatAndDivideNumber(Number(upvotes))}
             </p>
           </div>
         </div>
@@ -64,7 +118,7 @@ const Votes = ({
           />
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
             <p className="subtle-medium text-dark400_light900">
-              {formatAndDivideNumber(downVotes)}
+              {formatAndDivideNumber(Number(downvotes))}
             </p>
           </div>
         </div>

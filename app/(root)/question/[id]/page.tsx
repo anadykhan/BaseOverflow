@@ -43,14 +43,14 @@ const Page = async ({ params }) => {
           </Link>
           <div className="flex justify-end">
             <Votes
-            type="question"
-            itemId={JSON.stringify(result._id)}
-            userId={JSON.stringify(mongoUser._id)}
-            upvotes={result.upvotes?.length}
-            hasUpvoted={result.upvotes?.includes(mongoUser._id)}
-            downVotes={result.downVotes?.length}
-            hasDownvoted={result.downVotes?.includes(mongoUser._Id)}
-            hasSaved={mongoUser?.saved.includes(result._id)}
+              type="question"
+              itemId={JSON.stringify(result._id.toString())}
+              userId={JSON.stringify(mongoUser._id.toString())}
+              upvotes={result.upvotes.length}
+              hasUpvoted={result.upvotes.includes(mongoUser._id)}
+              downvotes={result.downvotes.length}
+              hasDownvoted={result.downvotes.includes(mongoUser._id)}
+              hasSaved={mongoUser.saved.includes(result._id)}
             />
           </div>
         </div>
@@ -100,7 +100,7 @@ const Page = async ({ params }) => {
 
       <AllAnswers
         questionId={JSON.stringify(result._id)}
-        authorId={JSON.stringify(mongoUser._id)}
+        authorId={mongoUser._id}
         totalAnswers={result.answers.length}
       />
 
