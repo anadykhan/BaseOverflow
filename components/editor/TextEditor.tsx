@@ -8,11 +8,13 @@ import { AnswersSchema } from "@/lib/validations";
 type TextEditorProps<T extends ZodSchema, K extends Path<z.infer<T>>> = {
   field: ControllerRenderProps<z.infer<T>, K>;
   schema: T;
+  initialValue: string;
 };
 
 const TextEditor = <T extends ZodSchema, K extends Path<z.infer<T>>>({
   field,
   schema,
+  initialValue
 }: TextEditorProps<T, K>) => {
   const editorRef = useRef(null);
   const { mode } = useTheme();
@@ -44,7 +46,7 @@ const TextEditor = <T extends ZodSchema, K extends Path<z.infer<T>>>({
         }
         onBlur={field.onBlur}
         onEditorChange={(content) => field.onChange(content)}
-        initialValue=""
+        initialValue={JSON.parse(initialValue)}
         init={{
           height: 350,
           menubar: false,

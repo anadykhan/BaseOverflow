@@ -5,12 +5,17 @@ import { connectToDatabase } from "../mongoose";
 import Tag from "@/database/tag.model";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionParams,
   QuestionVoteParams,
 } from "./shared.types";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
+import console from "console";
 
 export async function getQuestions(params: GetQuestionParams) {
   try {
@@ -79,6 +84,7 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
     connectToDatabase();
 
     const { questionId } = params;
+
     const question = await Question.findById(questionId)
       .populate({
         path: "tags",
@@ -107,8 +113,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
 
     if (hasUpvoted) {
       updateQuery = { $pull: { upvotes: userId } };
-    } 
-    else if (hasDownvoted) {
+    } else if (hasDownvoted) {
       updateQuery = {
         $pull: {
           downvotes: userId,
@@ -117,8 +122,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
           upvotes: userId,
         },
       };
-    } 
-    else {
+    } else {
       updateQuery = { $addToSet: { upvotes: userId } };
     }
 
@@ -126,7 +130,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       new: true,
     });
 
-    console.log("Question: ", question)
+    console.log("Question: ", question);
 
     if (!question) {
       throw new Error("Upvote question not found!");
@@ -143,7 +147,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
 
 export async function downvoteQuestion(params: QuestionVoteParams) {
   try {
-    connectToDatabase(); 
+    connectToDatabase();
     const { questionId, userId, hasUpvoted, hasDownvoted, path } = params;
 
     let updateQuery = {};
@@ -179,6 +183,56 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
 
     revalidatePath(path);
     // return question;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, path } = params;
+
+    await Question.deleteOne({ _id: questionId });
+    await Answer.deleteMany({ questionId: questionId });
+    await Interaction.deleteMany({ question: questionId });
+
+    await Tag.updateMany(
+      { questions: questionId },
+      {
+        $pull: {
+          questions: questionId,
+        },
+      }
+    );
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, title, content, path } = params;
+
+    const question = await Question.findById({ _id: questionId });
+
+    if (!question) {
+      throw new Error("Question not found!");
+    }
+
+    question.title = title;
+    question.content = content;
+
+    question.save()
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;
