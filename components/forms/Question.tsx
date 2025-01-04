@@ -35,16 +35,16 @@ const Question = ({ mongoUserId, type, questionDetail }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const parsedQuestionDetail = JSON.parse(questionDetail || "");
-  const groupedTags = parsedQuestionDetail.tags.map((tag) => {
+  const parsedQuestionDetail = questionDetail && JSON.parse(questionDetail || "");
+  const groupedTags = parsedQuestionDetail?.tags.map((tag) => {
     return tag.name;
   });
 
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: parsedQuestionDetail.title || "",
-      explanation: parsedQuestionDetail.content || "",
+      title: parsedQuestionDetail?.title || "",
+      explanation: parsedQuestionDetail?.content || "",
       tags: groupedTags || [],
     },
   });
@@ -156,7 +156,9 @@ const Question = ({ mongoUserId, type, questionDetail }: Props) => {
               <FormControl className="mt-3.5">
                 <TextEditor<typeof QuestionsSchema, "explanation">
                   field={field}
-                  initialValue={JSON.stringify(parsedQuestionDetail.content)}
+                  initialValue={parsedQuestionDetail?.content ? JSON.stringify(
+                    parsedQuestionDetail?.content
+                  ) : ""}
                 />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">

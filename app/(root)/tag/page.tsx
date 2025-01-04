@@ -5,17 +5,20 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { UserFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-const Page = async () => {
-  const result = await getAllTags({});
+const Page = async ({searchParams}: SearchParamsProps) => {
+  const result = await getAllTags({
+    searchQuery: searchParams.query
+  });
 
   return (
     <div>
       <h1 className="h1-bold text-dark100_light900">All Tags</h1>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
-          route="/tags"
+          route="/tag"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search for tags"
@@ -30,7 +33,7 @@ const Page = async () => {
         {result.tags.length > 0 ? (
           result.tags.map((tag) => {
             return (
-              <Link href={`/tags/${tag._id}`} key={tag._id}>
+              <Link href={`/tag/${tag._id}`} key={tag._id}>
                 <TagCard tag={tag} />
               </Link>
             );

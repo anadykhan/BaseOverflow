@@ -18,6 +18,8 @@ const Page = async ({ params, searchParams }) => {
   const { userId: clerkId } = await auth();
   const userInfo = await getUserInfo({ userId: id });
 
+  // console.log("userInfo: ", userInfo.user.location);
+
   return (
     <>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
@@ -42,12 +44,13 @@ const Page = async ({ params, searchParams }) => {
                 <ProfileLink
                   imgUrl="/assets/icons/link.svg"
                   title="Portfolio"
+                  href={userInfo.user.portfolioWebsite}
                 />
               )}
               {userInfo.user.location && (
                 <ProfileLink
                   imgUrl="/assets/icons/location.svg"
-                  title={userInfo.user.locaiton}
+                  title={userInfo.user.location}
                 />
               )}
               <ProfileLink

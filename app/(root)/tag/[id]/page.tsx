@@ -7,10 +7,11 @@ import { QuestionFilters } from "@/constants/filters";
 import { getQuestionByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
 
-const Page = async ({ params }: URLProps) => {
+const Page = async ({ params, searchParams }: URLProps) => {
   const { id } = await params;
   const result = await getQuestionByTagId({
     tagId: id,
+    searchQuery: searchParams.query
   });
 
   return (
@@ -18,7 +19,7 @@ const Page = async ({ params }: URLProps) => {
       <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
-          route="/"
+          route={`/tag/${id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search tag questions"

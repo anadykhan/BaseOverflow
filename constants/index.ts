@@ -21,7 +21,7 @@ export const sidebarLinks = [
   },
   {
     imgURL: "/assets/icons/tag.svg",
-    route: "/tags",
+    route: "/tag",
     label: "Tags",
   },
   {

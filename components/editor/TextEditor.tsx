@@ -46,7 +46,7 @@ const TextEditor = <T extends ZodSchema, K extends Path<z.infer<T>>>({
         }
         onBlur={field.onBlur}
         onEditorChange={(content) => field.onChange(content)}
-        initialValue={JSON.parse(initialValue)}
+        initialValue={initialValue === "" ? "" : JSON.parse(initialValue)}
         init={{
           height: 350,
           menubar: false,

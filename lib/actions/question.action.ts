@@ -16,15 +16,28 @@ import { revalidatePath } from "next/cache";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
 import console from "console";
+import { View } from "lucide-react";
+import path from "path";
+import { FilterQuery } from "mongoose";
 
 export async function getQuestions(params: GetQuestionParams) {
   try {
     // W.I.P: Sorting needs to be fixed
     connectToDatabase();
 
+    const { searchQuery } = params;
+    const query: FilterQuery<typeof Question> = {}
+
+    if(searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
     console.log("Get question param: ", params);
 
-    const questions = await Question.find({})
+    const questions = await Question.find(query)
       .sort({
         createdAt: -1,
       })
@@ -230,9 +243,26 @@ export async function editQuestion(params: EditQuestionParams) {
     question.title = title;
     question.content = content;
 
-    question.save()
+    question.save();
 
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getHotQuestions() {
+  try {
+    connectToDatabase();
+    const hotQuestions = await Question.find({})
+      .sort({
+        Views: -1,
+        upvotes: -1,
+      })
+      .limit(5);
+
+    return hotQuestions;
   } catch (error) {
     console.log(error);
     throw error;

@@ -6,11 +6,13 @@ import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-const Home = async() => {
-
-  const result = await getQuestions({})
+const Home = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getQuestions({
+    searchQuery: searchParams.query,
+  });
 
   return (
     <>
@@ -18,7 +20,7 @@ const Home = async() => {
         <h1 className="h1-bold text-dark100_light900">All Questions</h1>
         <div className="flex justify-end max-sm:w-full">
           <Link href="/ask-question">
-            <Button className="primary-gradient !text-light-900 min-h-[40px] rounded-xl px-4 py-3">
+            <Button className="primary-gradient min-h-[40px] rounded-xl px-4 py-3 !text-light-900">
               Ask a question
             </Button>
           </Link>
