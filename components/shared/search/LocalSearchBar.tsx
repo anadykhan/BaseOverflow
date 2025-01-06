@@ -27,7 +27,7 @@ const LocalSearchBar = ({
   const query = searchParams.get("query");
   const [search, setSearch] = useState(query || "");
 
-  console.log("searchParams: ", searchParams.toString());
+  // console.log("searchParams: ", searchParams.toString());
   // console.log("pathname: ", pathname)
 
   useEffect(() => {

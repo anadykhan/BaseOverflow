@@ -16,8 +16,6 @@ import { revalidatePath } from "next/cache";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
 import console from "console";
-import { View } from "lucide-react";
-import path from "path";
 import { FilterQuery } from "mongoose";
 
 export async function getQuestions(params: GetQuestionParams) {
@@ -25,22 +23,35 @@ export async function getQuestions(params: GetQuestionParams) {
     // W.I.P: Sorting needs to be fixed
     connectToDatabase();
 
-    const { searchQuery } = params;
-    const query: FilterQuery<typeof Question> = {}
+    const { searchQuery, filter } = params;
+    const query: FilterQuery<typeof Question> = {};
 
-    if(searchQuery) {
+    if (searchQuery) {
       query.$or = [
         { title: { $regex: new RegExp(searchQuery, "i") } },
         { content: { $regex: new RegExp(searchQuery, "i") } },
       ];
     }
 
-    console.log("Get question param: ", params);
+    let sortOptions = {};
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "frequent":
+        sortOptions = { views: -1 };
+        break;
+      case "unanswered":
+        query.answer = { $size: 0 };
+        break;
+      default:
+        break;
+    }
+
+    console.log("query: ", query);
 
     const questions = await Question.find(query)
-      .sort({
-        createdAt: -1,
-      })
+      .sort(sortOptions)
       .populate({
         path: "tags",
         model: Tag,

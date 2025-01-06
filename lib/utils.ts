@@ -66,7 +66,7 @@ export const formUrlQuery = ({ params, key, value }: UrlQueryParams) => {
   const currentUrl = qs.parse(params);
   console.log("currentUrl: ", currentUrl)
   currentUrl[key] = value;
-  // console.log("currentUrl2: ", currentUrl);
+  console.log("currentUrl2: ", currentUrl);
 
   //returns 'https://foo.bar?query=bar'
   return qs.stringifyUrl(

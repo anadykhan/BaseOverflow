@@ -68,7 +68,7 @@ export interface CreateAnswerParams {
 
 export interface GetAnswersParams {
   questionId: string;
-  sortBy?: string;
+  filter?: string;
   page?: number;
   pageSize?: number;
 }

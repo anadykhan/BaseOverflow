@@ -40,11 +40,29 @@ export async function createAnswer(params: CreateAnswerParams) {
   }
 }
 
-export async function getAnswers({ questionId }: GetAnswersParams) {
+export async function getAnswers({ questionId, filter }: GetAnswersParams) {
   try {
+    connectToDatabase();
+
+    let sortOptions = {};
+    switch (filter) {
+      case "highestUpvotes":
+        sortOptions = { upvotes: -1 };
+        break;
+      case "lowestUpvotes":
+        sortOptions = { upvotes: 1 };
+        break;
+      case "recent":
+        sortOptions = { createdAt: -1 };
+        break;
+      case "old":
+        sortOptions = { createdAt: 1 };
+        break;
+    }
+
     const answers = await Answer.find({ questionId })
       .populate("author", "_id clerkId name picture")
-      .sort({ createdAt: -1 });
+      .sort(sortOptions);
 
     return answers;
   } catch (error) {
@@ -155,7 +173,7 @@ export async function deleteAnswer(params: DeleteAnswerParams) {
       { $pull: { answers: answerId } }
     );
     // await Interaction.deleteMany({ answer: answerId });
-    
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);

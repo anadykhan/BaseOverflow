@@ -16,7 +16,8 @@ const Home = async ({searchParams}: SearchParamsProps) => {
   }
   const result = await getSavedQuestions({
     clerkId: userId,
-    searchQuery: searchParams.query
+    searchQuery: searchParams.query,
+    filter: searchParams.filter
   });
 
   return (
@@ -36,7 +37,7 @@ const Home = async ({searchParams}: SearchParamsProps) => {
         />
       </div>
 
-      <HomeFilters />
+      {/* <HomeFilters /> */}
 
       <div className="mt-10 flex w-full flex-col gap-6">
         {result.length > 0 ? (
