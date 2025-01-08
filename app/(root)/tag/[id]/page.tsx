@@ -2,6 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import HomeFilters from "@/components/shared/home/HomeFilters";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { QuestionFilters } from "@/constants/filters";
 import { getQuestionByTagId } from "@/lib/actions/tag.action";
@@ -11,7 +12,8 @@ const Page = async ({ params, searchParams }: URLProps) => {
   const { id } = await params;
   const result = await getQuestionByTagId({
     tagId: id,
-    searchQuery: searchParams.query
+    searchQuery: searchParams.query,
+    page: searchParams.page ? parseInt(searchParams.page.toString()) : 1,
   });
 
   return (
@@ -59,6 +61,12 @@ const Page = async ({ params, searchParams }: URLProps) => {
             linkTitle="Ask a question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams.page ? parseInt(searchParams.page.toString()) : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );

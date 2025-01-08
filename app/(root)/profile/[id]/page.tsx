@@ -14,7 +14,7 @@ import Link from "next/link";
 
 const Page = async ({ params, searchParams }) => {
   const { id } = await params;
-  const search = await searchParams.query 
+  const search = await searchParams.page 
   const { userId: clerkId } = await auth();
   const userInfo = await getUserInfo({ userId: id });
 
@@ -93,14 +93,14 @@ const Page = async ({ params, searchParams }) => {
           </TabsList>
           <TabsContent value="top-posts">
             <QuestionsTab
-              searchParams={search}
+              searchParamsProp={search}
               userId={userInfo.user._id}
               clerkId={clerkId}
             />
           </TabsContent>
           <TabsContent value="answers">
             <AnswersTab
-              searchParams={search}
+              searchParamsProp={search}
               userId={userInfo.user._id}
               clerkId={clerkId}
             />

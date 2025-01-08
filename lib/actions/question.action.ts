@@ -23,8 +23,10 @@ export async function getQuestions(params: GetQuestionParams) {
     // W.I.P: Sorting needs to be fixed
     connectToDatabase();
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 20 } = params;
     const query: FilterQuery<typeof Question> = {};
+
+    const skipAmount = (page - 1) * pageSize;
 
     if (searchQuery) {
       query.$or = [
@@ -48,10 +50,12 @@ export async function getQuestions(params: GetQuestionParams) {
         break;
     }
 
-    console.log("query: ", query);
+    // console.log("query: ", query);
 
     const questions = await Question.find(query)
       .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
       .populate({
         path: "tags",
         model: Tag,
@@ -61,7 +65,10 @@ export async function getQuestions(params: GetQuestionParams) {
         model: User,
       });
 
-    return { questions };
+    const totalQuestions = await Question.countDocuments(query);
+    const isNext = totalQuestions > skipAmount + questions.length;
+
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

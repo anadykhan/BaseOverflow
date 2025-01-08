@@ -6,6 +6,7 @@ import Image from "next/image";
 import { getTimestamp } from "@/lib/utils";
 import ParseHTML from "./ParseHTML";
 import Votes from "./Votes";
+import Pagination from "./Pagination";
 
 interface Props {
   questionId: string;
@@ -15,9 +16,10 @@ interface Props {
   filter?: string;
 }
 
-const AllAnswers = async ({ questionId, authorId, totalAnswers, filter }: Props) => {
-  const result = await getAnswers({
+const AllAnswers = async ({ questionId, authorId, totalAnswers, filter, page  }: Props) => {
+  const {answers, isNext} = await getAnswers({
     questionId: JSON.parse(questionId),
+    page: page ? page : 1,
     filter
   });
 
@@ -30,7 +32,7 @@ const AllAnswers = async ({ questionId, authorId, totalAnswers, filter }: Props)
       </div>
 
       <div>
-        {result.map((answer) => {
+        {answers.map((answer) => {
           return (
             <article key={answer._id} className="light-border border-b py-10">
               <div className="flex items-center justify-between">
@@ -73,6 +75,12 @@ const AllAnswers = async ({ questionId, authorId, totalAnswers, filter }: Props)
             </article>
           );
         })}
+      </div>
+      <div className="mt-10 w-full">
+        <Pagination
+          pageNumber={page ? parseInt(page.toString()) : 1}
+          isNext={isNext}
+        />
       </div>
     </div>
   );
