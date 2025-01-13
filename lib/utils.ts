@@ -83,22 +83,24 @@ interface RemoveUrlQueryParams {
   keysToRemove: string[];
 }
 
-export const removeKeysFromQuery = ({params, keysToRemove}: RemoveUrlQueryParams) => {
+export const removeKeysFromQuery = ({
+  params,
+  keysToRemove,
+}: RemoveUrlQueryParams) => {
   // console.log("removeKeysFromQuery({params}): ", params);
   // console.log("keysToRemove: ", keysToRemove);
 
-  const currentUrl = qs.parse(params)
-  // console.log("currentUrl: ", currentUrl);
+  const currentUrl = qs.parse(params);
+  console.log("currentUrl: ", currentUrl);
 
   keysToRemove.map((key) => {
-    delete currentUrl[key]
-  })
-
+    delete currentUrl[key];
+  });
   return qs.stringifyUrl(
     {
       url: window.location.pathname,
       query: currentUrl,
     },
     { skipNull: true }
-  ); 
-}
+  );
+};

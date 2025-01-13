@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 export interface GetQuestionParams {
-  page?: number;
+  page?: number | undefined;
   pageSize?: number;
   searchQuery?: string;
   filter?: string;
@@ -136,4 +136,9 @@ export interface EditQuestionParams {
   title: string;
   content: string;
   path: string;
+}
+
+export interface SearchParams {
+  query?: string | null;
+  type?: string | null;
 }

@@ -11,13 +11,12 @@ import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
+  const { query, filter, page } = await searchParams;
   const result = await getQuestions({
-    searchQuery: searchParams.query,
-    filter: searchParams.filter,
-    page: searchParams.page ? parseInt(searchParams.page.toString()) : 1,
+    searchQuery: query,
+    filter: filter,
+    page: page ? parseInt(page.toString()) : 1,
   });
-
-  console.log(result);
 
   return (
     <>
