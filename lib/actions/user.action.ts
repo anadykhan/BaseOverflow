@@ -17,6 +17,8 @@ import { revalidatePath } from "next/cache";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
+import { BadgeCriteriaType } from "@/types";
+import { assignBadges } from "../utils";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
@@ -203,20 +205,19 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
         break;
     }
 
-    const user = await User.findOne({ clerkId })
-      .populate({
-        path: "saved",
-        match: query,
-        options: {
-          sort: sortOptions,
-          skip: skipAmount,
-          limit: pageSize + 1,
-        },
-        populate: [
-          { path: "tags", model: Tag, select: "_id name" },
-          { path: "author", model: User, select: "_id clerkId name picture" },
-        ],
-      })
+    const user = await User.findOne({ clerkId }).populate({
+      path: "saved",
+      match: query,
+      options: {
+        sort: sortOptions,
+        skip: skipAmount,
+        limit: pageSize + 1,
+      },
+      populate: [
+        { path: "tags", model: Tag, select: "_id name" },
+        { path: "author", model: User, select: "_id clerkId name picture" },
+      ],
+    });
 
     if (!user) {
       throw new Error("User not found!");
@@ -249,10 +250,78 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswers = await Answer.countDocuments({ author: user._id });
 
+    const questionsUpvotes = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upvotes: { $size: "$upvotes" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    // console.log("questionsUpvotes: ", questionsUpvotes[0].totalUpvotes);
+
+    const answersUpvotes = await Answer.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upvotes: { $size: "$upvotes" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: "$upvotes" },
+        },
+      },
+    ]);
+
+    // console.log("answersUpvotes: ", answersUpvotes[0].totalUpvotes);
+
+    const questionsViews = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $group: {
+          _id: null,
+          totalViews: { $sum: "$views" },
+        },
+      },
+    ]);
+
+    // console.log("questionsViews: ", questionsViews[0].totalViews);
+
+    const criteria = [
+      { type: "QUESTION_COUNT" as BadgeCriteriaType, count: totalQuestions },
+      { type: "ANSWER_COUNT" as BadgeCriteriaType, count: totalAnswers },
+      {
+        type: "QUESTION_UPVOTES" as BadgeCriteriaType,
+        count: questionsUpvotes[0]?.totalUpvotes || 0,
+      },
+      {
+        type: "ANSWER_UPVOTES" as BadgeCriteriaType,
+        count: answersUpvotes[0]?.totalUpvotes || 0,
+      },
+      {
+        type: "TOTAL_VIEWS" as BadgeCriteriaType,
+        count: questionsViews[0]?.totalViews || 0,
+      },
+    ];
+
+    const badgeCounts = assignBadges({ criteria });
+
     return {
       user,
       totalQuestions,
       totalAnswers,
+      badgeCounts,
     };
   } catch (error) {
     console.log(error);

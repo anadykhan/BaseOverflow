@@ -11,7 +11,7 @@ import {
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import Interaction from "@/database/interaction.model";
-import { Tag } from "lucide-react";
+import User from "@/database/user.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -19,7 +19,7 @@ export async function createAnswer(params: CreateAnswerParams) {
 
     const { content, author, questionId, path } = params;
 
-    console.log(questionId);
+    // console.log(questionId);
 
     const newAnswer = await Answer.create({
       content,
@@ -27,10 +27,21 @@ export async function createAnswer(params: CreateAnswerParams) {
       questionId,
     });
 
-    await Question.findByIdAndUpdate(questionId, {
+    const questionObject = await Question.findByIdAndUpdate(questionId, {
       $push: {
         answers: newAnswer._id,
       },
+    });
+
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question: questionId,
+      tags: questionObject.tags,
+    });
+
+    await User.findByIdAndUpdate(author, {
+      $inc: { reputation: 10 },
     });
 
     revalidatePath(path);
@@ -115,6 +126,13 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
     }
 
     // Increament author reputation
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasUpvoted ? -2 : 2 },
+    });
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasUpvoted ? -10 : 10 },
+    });
+ 
     revalidatePath(path);
     // return question;
   } catch (error) {
@@ -158,6 +176,12 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
     }
 
     // Decreament author reputation
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasDownvoted ? 1 : -1 },
+    });
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasDownvoted ? 10 : -10 },
+    });
 
     revalidatePath(path);
     // return question;

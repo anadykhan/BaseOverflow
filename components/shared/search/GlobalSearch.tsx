@@ -13,7 +13,7 @@ const GlobalSearch = () => {
 
   const query = searchParams.get("query");
   const [search, setSearch] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);  
   const searchContainerRef = useRef(null);
   // console.log("isOpen: ", isOpen);
 

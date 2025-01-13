@@ -37,4 +37,4 @@ export interface BadgeCounts {
   SILVER: number;
   BRONZE: number;
 }
-exporttypeBadgeCriteriaType = keyoftypeofBADGE_CRITERIA;
+export type BadgeCriteriaType = keyof typeof BADGE_CRITERIA;
