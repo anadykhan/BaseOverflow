@@ -15,6 +15,11 @@ export const sidebarLinks = [
     label: "Community",
   },
   {
+    imgURL: "/assets/icons/message.svg",
+    route: "/messages",
+    label: "Messages",
+  },
+  {
     imgURL: "/assets/icons/star.svg",
     route: "/collection",
     label: "Collections",

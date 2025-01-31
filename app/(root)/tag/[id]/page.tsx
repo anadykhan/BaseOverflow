@@ -7,6 +7,12 @@ import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { QuestionFilters } from "@/constants/filters";
 import { getQuestionByTagId } from "@/lib/actions/tag.action";
 import { URLProps } from "@/types";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Single Tag | BaseOverflow",
+  description: "Single tag page of BaseOverflow",
+};
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { id } = await params;

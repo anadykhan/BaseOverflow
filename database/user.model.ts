@@ -13,6 +13,8 @@ export interface IUser extends Document {
   reputation?: number;
   saved: Schema.Types.ObjectId[];
   joinedAt: Date;
+  followers: Schema.Types.ObjectId[];
+  following: Schema.Types.ObjectId[];
 }
 
 const userSchema = new Schema({
@@ -28,6 +30,8 @@ const userSchema = new Schema({
   reputation: { type: Number, default: 0 },
   saved: [{ type: Schema.Types.ObjectId, ref: "Question" }],
   joinedAt: { type: Date, default: Date.now },
+  followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  following: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
 const User = models.User || model("User", userSchema);

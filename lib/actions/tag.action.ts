@@ -128,7 +128,7 @@ export async function getQuestionByTagId(params: GetQuestionsByTagIdParams) {
   }
 }
 
-export async function getPopularTags(params: GetQuestionsByTagIdParams) {
+export async function getPopularTags() {
   try {
     connectToDatabase();
 

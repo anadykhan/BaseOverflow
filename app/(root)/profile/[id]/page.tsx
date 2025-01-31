@@ -11,13 +11,24 @@ import { SignedIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+import { getFollowStats } from "@/lib/actions/user.action.ts";
+
+export const metadata: Metadata = {
+  title: "Profile | BaseOverflow",
+  description: "Single page of BaseOverflow",
+};
 
 const Page = async ({ params, searchParams }) => {
+  //This id is belong to every user
   const { id } = await params;
-  const search = await searchParams.page 
+  const search = await searchParams.page;
   const { userId: clerkId } = await auth();
+  
   const userInfo = await getUserInfo({ userId: id });
+  const followStats = await getFollowStats({ clerkId: id });
 
+  // console.log("=====> ", followStats);
   // console.log("userInfo: ", userInfo.user.location);
 
   return (
@@ -63,6 +74,20 @@ const Page = async ({ params, searchParams }) => {
                 {userInfo.user.bio}
               </p>
             )}
+            <div className="mt-3 flex gap-3">
+              <div>
+                <span className="text-lg font-bold">
+                  {followStats?.followers}
+                </span>{" "}
+                <span className="paragraph-regular">Followers</span>
+              </div>
+              <div>
+                <span className="text-lg font-bold">
+                  {followStats?.following}
+                </span>{" "}
+                <span className="paragraph-regular">Following</span>
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
@@ -92,7 +117,10 @@ const Page = async ({ params, searchParams }) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts">
+          <TabsContent
+            value="top-posts"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
             <QuestionsTab
               searchParamsProp={search}
               userId={userInfo.user._id}

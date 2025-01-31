@@ -1,6 +1,12 @@
 import ProfileForm from "@/components/forms/ProfileForm";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Edit Profile | BaseOverflow",
+  description: "Edit profile page of BaseOverflow",
+};
 
 const Page = async ({ params }) => {
   const { userId } = await auth();
@@ -13,7 +19,7 @@ const Page = async ({ params }) => {
 
   return (
     <>
-      <h1 className="h1-bold text_dark100_light900">Edit Profile</h1>
+      <h1 className="h1-bold text-dark100_light900">Edit Profile</h1>
       <div className="mt-9">
         <ProfileForm clerkId={userId} user={JSON.stringify(mongoUser)} />
       </div>

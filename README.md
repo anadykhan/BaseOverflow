@@ -39,3 +39,98 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 - Dont add reputation to the user who interacts with their own question or answer
 - Add reputation count if the view is more than 1000
+
+Rough code (socket/route.ts):
+// import Conversation from "@/database/conversation.model";
+// import Message from "@/database/message.model";
+// import { connectToDatabase } from "@/lib/mongoose";
+// import { NextApiRequest, NextApiResponse } from "next";
+// import { Server as IOServer, Socket } from "socket.io";
+
+// let io: IOServer | undefined;
+
+// const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+//     if(!res.socket.server.io) {
+//         console.log("Initializing socket...");
+
+//         const io = new IOServer(res.socket.server, {
+//             path: "/api/socket",
+//             addTrailingSlash: false,
+//         });
+
+//         res.socket.server.io = io;
+        
+//         io.on("connection", (socket) => {
+//             console.log("A user connected: ${socket.id}");
+
+//             socket.on("joinConversation", (conversationId: string) => {
+//                 socket.join(conversationId);
+//                 console.log(`User joined conversation: ${conversationId}`);
+//             });
+
+//             socket.on("sendMessage", async (messageData) => {
+//                 try {
+//                     connectToDatabase()
+//                     const { conversationId, senderId, receiverId, text } =
+//                       messageData;
+
+//                       console.log("messageData: ", messageData)
+
+//                     // const newMessage = await Message.create({
+//                     //     conversationId,
+//                     //     senderId,
+//                     //     receiverId,
+//                     //     text,
+//                     //     timestamp: new Date(),
+//                     //     isRead: false,
+//                     // });
+
+//                     // await Conversation.findByIdAndUpdate(conversationId, {
+//                     //     lastMessage: {
+//                     //         text,
+//                     //         timeStamp: new Date(),
+//                     //     },
+//                     //     $inc: {unreadCount: 1},
+//                     // })
+
+//                     // io.to(conversationId).emit("receiveMessage", newMessage);
+                    
+//                 } catch (error) {
+//                     console.log("Error sending message:", error);
+//                     throw error;
+//                 }
+//             });
+
+//             socket.on("markAsRead", async (conversationId, userId) => {
+//                 try {
+//                     // await connectToDatabase();
+
+//                     // await Message.updateMany({
+//                     //     conversationId,
+//                     //     receiverId: userId,
+//                     //     isRead: false,
+//                     // }, 
+//                     // {isRead: true});
+
+//                     // await Conversation.findByIdAndUpdate(conversationId, {
+//                     //     $set: {unreadCount: 0},
+//                     // });
+
+//                     // io?.to(conversationId).emit("messageRead", {conversationId, userId});
+
+//                 } catch (error) {
+//                     console.log("Error marking message as read:", error);
+//                     throw error;
+//                 }
+//             });
+
+//             socket.on("disconnect", () => {
+//                 console.log("A user disconnected: ${socket.id}");
+//             });
+//         })
+//     }
+
+//     res.end();
+// };
+
+// export default handler;

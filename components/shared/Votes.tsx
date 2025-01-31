@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "@/hooks/use-toast";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { viewQuestion } from "@/lib/actions/interaction.action";
 import {
@@ -33,7 +34,7 @@ const Votes = ({
   hasSaved,
 }: Props) => {
   const pathname = usePathname();
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSave = async () => {
     await toggleSaveQuestion({
@@ -41,11 +42,19 @@ const Votes = ({
       questionId: JSON.parse(itemId),
       path: pathname,
     });
+
+    toast({
+      title: `Question ${!hasSaved ? "Saved" : "Removed"}`,
+      variant: !hasSaved ? "default" : "destructive",
+    });
   };
 
   const handleVote = async (action: string) => {
     if (!userId) {
-      return;
+      return toast({
+        title: "Please login to continue",
+        description: "You must be logged in to perform this action",
+      });
     }
 
     if (action === "upvote") {
@@ -67,7 +76,10 @@ const Votes = ({
         });
       }
 
-      return;
+      return toast({
+        title: `Upvote ${!hasUpvoted ? "Successfully" : "Removed"}`,
+        variant: !hasUpvoted ? "default" : "destructive",
+      });
     }
 
     if (action === "downvote") {
@@ -89,7 +101,10 @@ const Votes = ({
         });
       }
 
-      return;
+      return toast({
+        title: `Downvote ${!hasUpvoted ? "Successfully" : "Removed"}`,
+        variant: !hasDownvoted ? "default" : "destructive",
+      });
     }
   };
 
@@ -97,9 +112,9 @@ const Votes = ({
     viewQuestion({
       questionId: JSON.parse(itemId),
       userId: userId ? JSON.parse(userId) : undefined,
-    })
-    console.log("Triggered")
-  }, [itemId, userId, pathname, router])
+    });
+    console.log("Triggered");
+  }, [itemId, userId, pathname, router]);
 
   return (
     <div className="flex gap-5">

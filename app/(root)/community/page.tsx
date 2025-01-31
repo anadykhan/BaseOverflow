@@ -7,15 +7,23 @@ import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 import page from "../(home)/page";
+import Loading from "./loading";
+import { Metadata } from "next";
+import { auth } from "@clerk/nextjs/server";
+
+export const metadata: Metadata = {
+  title: "Community | BaseOverflow",
+  description: "Community page of BaseOverflow",
+};
 
 const Page = async ({ searchParams }: SearchParamsProps) => {
+  const {userId} = await auth()
+  const { query, filter, page } = await searchParams;
   const { users, isNext } = await getAllUsers({
-    searchQuery: searchParams.query,
-    filter: searchParams.filter,
-    page: searchParams.page ? parseInt(searchParams.page.toString()) : 1,
+    searchQuery: query,
+    filter: filter,
+    page: page ? parseInt(page.toString()) : 1,
   });
-
-  // console.log(isNext)
 
   return (
     <div>
@@ -36,7 +44,13 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
       <section className="mt-12 flex flex-wrap gap-4">
         {users.length > 0 ? (
           users.map((user) => {
-            return <UserCard key={user._id} user={user} />;
+            return (
+              <UserCard
+                key={user._id}
+                user={user}
+                currentUserClerkId={userId}
+              />
+            );
           })
         ) : (
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
@@ -49,7 +63,7 @@ const Page = async ({ searchParams }: SearchParamsProps) => {
       </section>
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams.page ? parseInt(searchParams.page.toString()) : 1}
+          pageNumber={page ? parseInt(page.toString()) : 1}
           isNext={isNext}
         />
       </div>

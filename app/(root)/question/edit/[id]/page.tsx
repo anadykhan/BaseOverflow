@@ -2,6 +2,12 @@ import Question from "@/components/forms/Question";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs/server";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Edit question | BaseOverflow",
+  description: "Edit question page of BaseOverflow",
+};
 
 const Page = async ({params}) => {
   const { userId } = await auth();

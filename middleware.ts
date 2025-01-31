@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -10,13 +11,20 @@ const isPublicRoute = createRouteMatcher([
   "/tags/:id",
   "/profile/:id",
   "/community",
-  "/jobs",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
   if (!isPublicRoute(request)) {
     await auth.protect();
   }
+
+  // Create a new response
+  const response = NextResponse.next();
+
+  // Set the header on the response instead of the request
+  response.headers.set("x-pathname", request.nextUrl.pathname);
+
+  return response;
 });
 
 export const config = {

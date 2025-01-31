@@ -44,7 +44,7 @@ export async function getQuestions(params: GetQuestionParams) {
         sortOptions = { views: -1 };
         break;
       case "unanswered":
-        query.answer = { $size: 0 };
+        query.answers = { $size: 0 };
         break;
       default:
         break;

@@ -8,6 +8,12 @@ import { TagFilters, UserFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Tags | BaseOverflow",
+  description: "Tags page of BaseOverflow",
+};
 
 const Page = async ({searchParams}: SearchParamsProps) => {
   const {query, filter, page} = await searchParams;

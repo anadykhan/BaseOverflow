@@ -10,6 +10,12 @@ import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Single Question | BaseOverflow",
+  description: "Single question page of BaseOverflow",
+};
 
 const Page = async ({ params, searchParams }) => {
   const { id } = await params;

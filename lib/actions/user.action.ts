@@ -19,11 +19,13 @@ import Tag from "@/database/tag.model";
 import Answer from "@/database/answer.model";
 import { BadgeCriteriaType } from "@/types";
 import { assignBadges } from "../utils";
+import { initCustomTraceSubscriber } from "next/dist/build/swc/generated-native.js";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
     connectToDatabase();
     const { userId } = params;
+    console.log("userId: ", userId);
     const user = await User.findOne({ clerkId: userId });
     return user;
   } catch (error) {
@@ -391,6 +393,102 @@ export async function getUserAnswers(params: GetUserStatsParams) {
     return { totalAnswers, answers: userAnswers, isNext };
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+}
+
+export async function followUser(params: {
+  followerId: string;
+  followingId: string;
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+
+    const { followerId, followingId, path } = params;
+    const parsedFollowingId = JSON.parse(followingId);
+
+    // First get the follower's MongoDB document using clerkId
+    const followerUser = await User.findOne({ clerkId: followerId });
+    if (!followerUser) throw new Error("Follower not found");
+
+    // Follow operation using MongoDB IDs
+    await User.findByIdAndUpdate(followerUser._id, {
+      $addToSet: { following: parsedFollowingId },
+    });
+
+    await User.findByIdAndUpdate(parsedFollowingId, {
+      $addToSet: { followers: followerUser._id },
+    });
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function unfollowUser(params: {
+  followerId: string;
+  followingId: string;
+  path: string;
+}) {
+  try {
+    connectToDatabase();
+
+    const { followerId, followingId, path } = params;
+    const parsedFollowingId = JSON.parse(followingId);
+
+    // First get the follower's MongoDB document using clerkId
+    const followerUser = await User.findOne({ clerkId: followerId });
+    if (!followerUser) throw new Error("Follower not found");
+
+    // Unfollow operation using MongoDB IDs
+    await User.findByIdAndUpdate(followerUser._id, {
+      $pull: { following: parsedFollowingId },
+    });
+
+    await User.findByIdAndUpdate(parsedFollowingId, {
+      $pull: { followers: followerUser._id },
+    });
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getFollowStatus(params) {
+  try {
+    connectToDatabase();
+    const { currentUserClerkId, userId } = params;
+    const currentObjectId = await getUserById({ userId: currentUserClerkId });
+
+    const user = await User.findById(currentObjectId);
+    return user.following.includes(userId);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getFollowStats(params) {
+  try {
+    connectToDatabase();
+
+    const { clerkId } = params;
+
+    const user = await getUserById({ userId: clerkId });
+
+    if (!user) throw new Error("Follower not found!");
+
+    return {
+      followers: user.followers.length,
+      following: user.following.length,
+    };
+  } catch (error) {
+    console.log("Error getting follow stats: ", error);
     throw error;
   }
 }

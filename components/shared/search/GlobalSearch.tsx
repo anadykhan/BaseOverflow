@@ -18,7 +18,7 @@ const GlobalSearch = () => {
   // console.log("isOpen: ", isOpen);
 
   // console.log("searchParams: ", searchParams?.toString());
-  console.log("searchContainerRef: ", searchContainerRef);
+  // console.log("searchContainerRef: ", searchContainerRef);
 
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
