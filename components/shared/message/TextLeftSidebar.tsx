@@ -11,7 +11,6 @@ const TextLeftSidebar = async () => {
   const conversitons = await getConversations({
     userId: JSON.stringify(userId),
   });
- 
 
   return (
     <section className="background-light900_dark200 light-border custom-scrollbar sticky left-0 top-0 flex h-[750px] flex-col items-center gap-8 overflow-y-auto rounded-xl border-r py-6 shadow-light-300 dark:shadow-none max-lg:hidden lg:w-[330px]">
@@ -20,7 +19,7 @@ const TextLeftSidebar = async () => {
           <h1 className="h3-bold text-dark-100 dark:text-light-800">
             Messages
           </h1>
-          <UserSearchModal />
+          <UserSearchModal cuurentClerkId={userId} />
         </div>
         <LocalSearchBar
           route="/messages"

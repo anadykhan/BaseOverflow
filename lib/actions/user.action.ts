@@ -492,3 +492,28 @@ export async function getFollowStats(params) {
     throw error;
   }
 }
+
+export async function getMutualFollowers(params) {
+  try {
+    connectToDatabase();
+
+    const { clerkId } = params;
+
+    const user = await User.findOne({ clerkId })
+      .populate("followers", "clerkId name username picture _id")
+      .populate("following", "clerkId name username picture _id");
+
+    if (!user) throw new Error("Follower not found!");
+
+    const followerIds = new Set(user.followers.map((f) => f._id.toString()));
+
+    const mutuals = user.following.filter((followingUser) =>
+      followerIds.has(followingUser._id.toString())
+    );
+
+    return { mutuals };
+  } catch (error) {
+    console.log("Error getting follow get people");
+    throw error;
+  }
+}
